@@ -3,8 +3,8 @@
 #include <stdlib.h>
 
 static Node *prev_node_at(Node *head, size_t n) {
-  auto current = head;
-  Node *prev = nullptr;
+  Node *current = head;
+  Node *prev = NULL;
 
   if (current) {
     size_t i = 0;
@@ -14,7 +14,7 @@ static Node *prev_node_at(Node *head, size_t n) {
       ++i;
     }
     if (i != n)
-      return nullptr;
+      return NULL;
     else
       return prev;
   }
@@ -27,15 +27,15 @@ Node *insert_at(Node **head, size_t n, Node *node) {
     *head = node;
     return node;
   }
-  auto prev_node = prev_node_at(*head, n);
-  auto next_node = prev_node->next;
+  Node *prev_node = prev_node_at(*head, n);
+  struct Node *next_node = prev_node->next;
   prev_node->next = node;
   node->next = next_node;
   return node;
 }
 
 size_t list_len(Node *head) {
-  auto current = head;
+  Node *current = head;
 
   if (current) {
     size_t len = 1;
@@ -48,43 +48,43 @@ size_t list_len(Node *head) {
 }
 
 Node *node_at(Node *head, size_t n) {
-  auto current = head;
+  Node *current = head;
 
   for (size_t i = 0; i < n;) {
     if (current) {
       current = current->next;
       ++i;
     } else
-      return nullptr;
+      return NULL;
   }
   return current;
 }
 // Node *node_idx(Node *head, size_t n);
 
 void *delete_at(Node **head, size_t n) {
-  auto current = *head;
+  Node *current = *head;
   if (!n) {
     if ((*head)->next)
       *head = current->next;
     else
-      *head = nullptr;
+      *head = NULL;
 
-    return nullptr;
+    return NULL;
   } else {
-    auto prev = prev_node_at(*head, n);
-    auto node_to_be_deleted = prev->next;
+    Node *prev = prev_node_at(*head, n);
+    struct Node *node_to_be_deleted = prev->next;
     prev->next = node_to_be_deleted->next;
 
-    auto data = node_to_be_deleted->data;
+    void *data = node_to_be_deleted->data;
     free(node_to_be_deleted);
     return data;
   }
 }
 
 Node *tail(Node *head) {
-  auto current = head;
+  Node *current = head;
   if (current) {
-    auto next = current->next;
+    struct Node *next = current->next;
     while (next) {
       current = current->next;
       next = current->next;

@@ -17,15 +17,27 @@ Node *playlist;
 /// Note: Some lines may not have a newline, e.g., last line in a file,
 /// therefore we have to check for presence.
 char *remove_newline_if_exists(char *line) {
-  // YOUR CODE HERE
+  // MY CODE START
+
+  // NULL-terminate the line and truncate it after the first occurrence of
+  // either '\r' or '\n'
+  line[strcspn(line, "\r\n")] = '\0';
+
+  // MY CODE END
+
   return line;
 }
 
-/// Reads lines from at `filename`, creates a node for each line and inserts
+/// Reads lines from `filename`, creates a node for each line and inserts
 /// nodes to `list`.
 Node **load_file(const char *filename, Node **list) {
   // Open the file and assign to stream `f`
-  // YOUR CODE HERE
+  // MY CODE START
+
+  FILE *f = fopen(filename, "r");
+
+  // MY CODE END
+
   if (!f) {
     perror(PLAYLIST_IN_PATH);
     exit(EXIT_FAILURE);
@@ -34,17 +46,49 @@ Node **load_file(const char *filename, Node **list) {
 
   while (
       // Read one line from the stream
-      // YOUR CODE HERE
+      // MY CODE START
+
+      fgets(line, TRACK_TITLE_SIZE, f)
+
+      // MY CODE END
   ) {
     remove_newline_if_exists(line);
 
-    auto new_node = (Node *)malloc(sizeof(Node));
-    new_node->next = nullptr;
-    auto data = (Data *)malloc(sizeof(Data));
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    new_node->next = NULL;
+    Data *data = (Data *)malloc(sizeof(Data));
     new_node->data = data;
 
     // Copy line to `new_node` and append `new_node` to `list`
-    // YOUR CODE HERE
+    // MY CODE START
+
+    // If malloc fails, skip this iteration (line) of the loop
+    if ((!new_node) || (!data)) {
+      fprintf(stderr, "%s", "ERROR: Memory allocation failed.");
+      continue;
+    }
+
+    // Copy the data from `line` into `new_node`'s data
+    // Here I'm copying strlen(line) + 1 bytes to include the NULL-terminator
+    memcpy((char *)data, line, strlen(line) + 1);
+    new_node->data = data;
+
+    // If the list is empty, set the head to `new_node`
+    if (!(*list)) {
+      *list = new_node;
+      // If the list isn't empty, append new_node to its tail
+    } else {
+      Node *current = *list;
+      // Keep traversing the list until `current`'s next node is NULL
+      while (current->next) {
+        current = current->next;
+      }
+      // Append `new_node` to the list by setting
+      // `current`'s next node to `new_node`
+      current->next = new_node;
+    }
+
+    // MY CODE END
   }
   fclose(f);
   return list;
@@ -53,23 +97,34 @@ Node **load_file(const char *filename, Node **list) {
 /// Saves `list` contents to the file at `filename`.
 void save_file(const char *filename, Node *list) {
   // Open file
-  // YOUR CODE HERE
+  // MY CODE START
+
+  FILE *f = fopen(filename, "w");
+
+  // MY CODE END
 
   // Move through the list and save the tracks to the file
   // Note: You have to cast the data to print the track to the file as follows:
   // (char *)current->data
   // Because current->data is a pointer to everything (void*).
-  auto current = playlist;
-  // YOUR CODE HERE
+  Node *current = playlist;
+  // MY CODE START¨
+
+  while (current) {
+    fprintf(f, "%s\n", (char *)current->data);
+    current = current->next;
+  }
+
+  // MY CODE END
 
   fclose(f);
   //// END SOLUTION
 }
 
 void print_tracks(const Node *const playlist) {
-  auto current = playlist;
+  const Node *current = playlist;
   for (size_t i = 1; current; i++, current = current->next)
-    printf("%2ld: %s\n", i, (char *)current->data);
+    printf("%2zu: %s\n", i, (char *)current->data);
 }
 
 int main() {
@@ -81,7 +136,7 @@ int main() {
   free(delete_at(&playlist, node_index_to_del));
 
   // Insertion
-  Node node = {.data = "Tarkan – Şımarık 💋", .next = nullptr};
+  Node node = {.data = "Tarkan – Şımarık 💋", .next = NULL};
   insert_at(&playlist, 3, &node);
 
   save_file(PLAYLIST_OUT_PATH, playlist);

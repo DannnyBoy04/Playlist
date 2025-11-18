@@ -12,7 +12,7 @@ typedef struct Node {
 
 /**
  * Inserts `node` at the 0-indexed position `n` on the list with the start
- * node`head`.
+ * node `head`.
  * @return `Node *` that has been inserted.
  * @note `head` is a pointer to a pointer, because we need to be
 able to modify the head of the provided linked list.
@@ -39,6 +39,6 @@ void *delete_at(Node **head, size_t n);
 /**
  * Deletes and deallocates node at index `n`.
  * @return the node at the tail of the list.
- * @note Can return `nullptr` if the list is empty.
+ * @note Can return `NULL` if the list is empty.
  */
 Node *tail(Node *head);
