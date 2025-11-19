@@ -110,8 +110,14 @@ void save_file(const char *filename, Node *list) {
   Node *current = playlist;
   // MY CODE START¨
 
+  // Keep looping through the list and printing to the output file
   while (current) {
-    fprintf(f, "%s\n", (char *)current->data);
+    fprintf(f, "%s", (char *)current->data);
+    // Only print at newline if the `current` has a `next` node
+    if (current->next) {
+      fprintf(f, "%s", "\n");
+    }
+    // Iterate to the next node
     current = current->next;
   }
 
