@@ -34,12 +34,13 @@ Node **load_file(const char *filename, Node **list) {
   // Open the file and assign to stream `f`
   // MY CODE START
 
+  // Open `filename` in read mode
   FILE *f = fopen(filename, "r");
 
   // MY CODE END
 
   if (!f) {
-    perror(PLAYLIST_IN_PATH);
+    perror(filename);
     exit(EXIT_FAILURE);
   }
   char line[TRACK_TITLE_SIZE];
@@ -55,18 +56,20 @@ Node **load_file(const char *filename, Node **list) {
     remove_newline_if_exists(line);
 
     Node *new_node = (Node *)malloc(sizeof(Node));
-    new_node->next = NULL;
+    if (!new_node) {
+      perror("malloc");
+      continue;
+    }
     Data *data = (Data *)malloc(sizeof(Data));
+    if (!data) {
+      perror("malloc");
+      continue;
+    }
+    new_node->next = NULL;
     new_node->data = data;
 
     // Copy line to `new_node` and append `new_node` to `list`
     // MY CODE START
-
-    // If malloc fails, skip this iteration (line) of the loop
-    if ((!new_node) || (!data)) {
-      fprintf(stderr, "%s", "ERROR: Memory allocation failed.");
-      continue;
-    }
 
     // Copy the data from `line` into `new_node`'s data
     // Here I'm copying strlen(line) + 1 bytes to include the NULL-terminator
@@ -99,7 +102,14 @@ void save_file(const char *filename, Node *list) {
   // Open file
   // MY CODE START
 
+  // Open `filename` in write mode
   FILE *f = fopen(filename, "w");
+
+  // If opening the file fails, exit the program
+  if (!f) {
+    perror(filename);
+    exit(EXIT_FAILURE);
+  }
 
   // MY CODE END
 
