@@ -118,7 +118,7 @@ void save_file(const char *filename, Node *list) {
   // (char *)current->data
   // Because current->data is a pointer to everything (void*).
   Node *current = playlist;
-  // MY CODE START¨
+  // MY CODE START
 
   // Keep looping through the list and printing to the output file
   while (current) {

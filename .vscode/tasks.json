@@ -1,0 +1,33 @@
+{
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "clang",
+            "args": [
+                "'@compile_flags.txt'",
+                "./src/main.c",
+                "./include/singly_linked_list.c",
+                "-o",
+                "playlist_edit"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "run",
+            "type": "shell",
+            "command": "./playlist_edit",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "build"
+            ],
+        },
+    ],
+    "version": "2.0.0",
+}
